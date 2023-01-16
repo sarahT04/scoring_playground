@@ -13,18 +13,20 @@ from operator import add
 class PostScores(APIView):
     def post(self, request):
         try:
-            if type(request.data['answer_list']) != 'list':
+            if type(request.data['answer_list']) != list:
+                print(type(request.data['answer_list']))
                 raise NotAcceptable('You\'re not giving an array for answer_list.')
             scores = get_scores(request.data['real_key'], request.data['answer_list'])
             serializer = ScoresSerializer(scores, many=True)
             return Response(serializer.data)
-        except:
+        except Exception as e:
+            print(e.message)
             raise ParseError('Unexpected error happened.')
 
 class PostScore(APIView):
     def post(self, request):
         try:
-            if type(request.data['answer_list']) == 'list':
+            if type(request.data['answer_list']) == list:
                 raise NotAcceptable('You\'re not giving an array for answer_list.')
             scores = get_score(request.data['real_key'], request.data['answer_list'])
             serializer = ScoresSerializer(scores)
